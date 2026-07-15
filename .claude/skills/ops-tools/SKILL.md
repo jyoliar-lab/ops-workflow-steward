@@ -1,11 +1,15 @@
 ---
 name: ops-tools
-description: ops-workflow의 저작 도구(ADR 번호·저작·accept·supersede·동결검사·티켓·인덱스)를 찾아 올바르게 실행한다. 정책 ADR을 쓰거나 accept/supersede하거나 티켓·인덱스를 다룰 때 반드시 먼저 본다.
+description: ops-workflow의 저작 도구를 찾아 올바르게 구동한다 — ADR 저작·accept·supersede·동결검사(adr), 문서 변경 후 인덱스 재생성(docs-index), 정책 티켓 발행·연결(ticket). 정책 문서를 쓰거나 고치거나, 인덱스를 갱신하거나, 정책 티켓을 다룰 때 먼저 본다.
 ---
 
 # ops-tools — ops-workflow의 저작 도구를 찾아 쓴다
 
-정책 문서 저작 *메커니즘*은 여기가 아니라 **ops-workflow**에 있다. steward는 adr·ticket·docs-index 스킬을 **자기 것으로 복제하지 않고**, ops-workflow의 스크립트를 **직접 구동**한다.
+정책 문서 저작 *메커니즘*은 여기가 아니라 **ops-workflow**에 있다. steward는 그 스킬들을 **자기 것으로 복제하지 않고** 직접 구동한다. 구동 대상 스킬은 셋이다:
+
+- **`adr`** — 정책 문서 저작·번호·accept·supersede·동결검사
+- **`docs-index`** — 문서를 추가·변경·accept·supersede한 뒤 `_index/` **재생성 (필수)**
+- **`ticket`** — 정책 관련 GitHub Issue 발행·타입·하위 연결
 
 ## ★ 반드시 지킬 것 — cwd
 
@@ -23,28 +27,43 @@ python3 "$CLAUDE_PROJECT_DIR/.claude/skills/ops-tools/scripts/ops-run.py" <ops�
 ```bash
 python3 "$CLAUDE_PROJECT_DIR/.claude/skills/ops-tools/scripts/list-ops-tools.py"
 ```
-→ ops-workflow의 각 스킬·스크립트의 경로·목적·사용법을 그 자리에서 읽어 보여준다.
+→ **adr·docs-index·ticket** 각 스킬의 스크립트 경로·목적·사용법을 그 자리에서 읽어 보여준다.
 
-**2. 스크립트를 구동한다 (항상 래퍼로):**
+**2. 스크립트를 구동한다 (항상 `ops-run.py` 래퍼로).** 아래는 대표 예이며, 정확한 인자는 1단계 지도 또는 각 SKILL.md를 본다:
 ```bash
-# 예 — 번호 발급 → 경로 도출 → accept → supersede → 동결검사
-python3 "$CLAUDE_PROJECT_DIR/.claude/skills/ops-tools/scripts/ops-run.py" .claude/skills/adr/scripts/next-id.py
-python3 "$CLAUDE_PROJECT_DIR/.claude/skills/ops-tools/scripts/ops-run.py" .claude/skills/adr/scripts/accept.py ADR-0009
-python3 "$CLAUDE_PROJECT_DIR/.claude/skills/ops-tools/scripts/ops-run.py" .claude/skills/adr/scripts/supersede.py --old ADR-0003 --by ADR-0009
-python3 "$CLAUDE_PROJECT_DIR/.claude/skills/ops-tools/scripts/ops-run.py" .claude/skills/adr/scripts/freeze-check.py docs/ops-workflow/adr/adr-0003-....md
+WRAP="$CLAUDE_PROJECT_DIR/.claude/skills/ops-tools/scripts/ops-run.py"
+
+# adr — 저작·전이
+python3 "$WRAP" .claude/skills/adr/scripts/list-subjects.py
+python3 "$WRAP" .claude/skills/adr/scripts/next-id.py
+python3 "$WRAP" .claude/skills/adr/scripts/doc-path.py --topic ops-workflow --id ADR-0009 --slug <slug>
+python3 "$WRAP" .claude/skills/adr/scripts/accept.py ADR-0009
+python3 "$WRAP" .claude/skills/adr/scripts/supersede.py --old ADR-0003 --by ADR-0009
+python3 "$WRAP" .claude/skills/adr/scripts/freeze-check.py <path>
+
+# ticket — 정책 관련 Issue (필요 시)
+python3 "$WRAP" .claude/skills/ticket/scripts/create.py --type task --title "..." --body-file <path> [--adr ADR-NNNN]
+python3 "$WRAP" .claude/skills/ticket/scripts/link-sub.py --parent <N> --child <M>
+
+# docs-index — 문서를 바꾼 뒤 반드시
+python3 "$WRAP" .claude/skills/docs-index/scripts/build-index.py
 ```
 
-**3. 판단 맥락이 필요하면** `$OPS_WORKFLOW_ROOT/.claude/skills/adr/SKILL.md`를 읽는다.
+**3. ★ 문서를 추가·변경·accept·supersede했으면 인덱스를 재생성한다** — `docs-index`. `_index/`(by-type·by-topic·by-subject·decisions-log)는 **생성물**이라 안 돌리면 낡는다. 저작·전이의 마지막 단계로 잊지 않는다.
+
+**4. 판단 맥락이 필요하면** 해당 스킬의 SKILL.md(`$OPS_WORKFLOW_ROOT/.claude/skills/<skill>/SKILL.md`)를 읽는다.
 
 ## 손대지 않는 것 (기계가 한다)
 
 - `id`·`accepted_at`은 **손으로 적지 않는다** — `next-id.py`·`accept.py`가 채운다.
 - `accepted` 문서 본문·경로는 **동결**이다 — 고치기 전 `freeze-check.py`. 바꾸려면 `supersede.py`.
+- `_index/`는 손으로 고치지 않는다 — **`docs-index` 생성물**이다.
+- 컨테이너 티켓(epic·feature)은 **accepted ADR을 전제**한다 — `ticket`의 게이트가 막는다. 우회하지 않는다.
 - `docs/` 커밋은 **사람이 승인**한다.
 
 ## 판단 규약은 steward의 법이 아니다
 
-`adr/SKILL.md`의 판단 절(임계선·입도·why-only·자족성)은 **현행 정책**이다. 기본으로 따르되, **정책 관리자로서 사용자와 함께 재고**할 수 있다 — 프롬프트-법이 아니라 편집 대상이다(`CLAUDE.md` §0).
+각 스킬 SKILL.md의 판단 절(특히 `adr`의 임계선·입도·why-only·자족성)은 **현행 정책**이다. 기본으로 따르되, **정책 관리자로서 사용자와 함께 재고**할 수 있다 — 프롬프트-법이 아니라 편집 대상이다(`CLAUDE.md` §0).
 
 ## conformance 주의
 
