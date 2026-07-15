@@ -1,0 +1,6 @@
+{
+  "//": "이 파일을 settings.local.json 으로 복사하고 OPS_WORKFLOW_ROOT 를 이 PC의 ops-workflow 클론 절대경로로 채운다. settings.local.json 은 gitignored 이며 PC마다 다르다.",
+  "env": {
+    "OPS_WORKFLOW_ROOT": "/absolute/path/to/ops-workflow"
+  }
+}
