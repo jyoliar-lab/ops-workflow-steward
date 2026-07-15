@@ -34,16 +34,15 @@ steward가 ops-workflow에 쓸 수 있는 곳은 둘뿐이다:
 
 ---
 
-## 3. 도구 — 정책 문서 저작은 ops-workflow의 스크립트로
+## 3. 도구 — 정책 문서 저작은 ops-workflow의 스크립트로 (`ops-tools` 스킬)
 
-steward는 ADR 저작 *메커니즘*을 새로 만들지 않는다. ops-workflow의 것을 **`$OPS_WORKFLOW_ROOT` 기준 경로**로 쓴다:
+steward는 ADR 저작 *메커니즘*(번호·저작·accept·supersede·동결검사·티켓·인덱스)을 새로 만들지 않는다. ops-workflow의 것을 **직접 구동**한다. 위치·사용법·구동 방법은 **`ops-tools` 스킬**이 담당한다:
 
-- ADR 번호·저작·accept·supersede·동결검사: `$OPS_WORKFLOW_ROOT/.claude/skills/adr/scripts/*.py`
-- 티켓: `$OPS_WORKFLOW_ROOT/.claude/skills/ticket/scripts/*`
-- 인덱스: `$OPS_WORKFLOW_ROOT/.claude/skills/docs-index/scripts/*`
+- **도구 지도(라이브)**: `list-ops-tools.py` — ops-workflow의 SKILL.md·스크립트를 그 자리에서 읽어 보여준다(정적 목록 없음 → 드리프트 없음).
+- ★ **구동은 반드시 `ops-run.py` 래퍼로.** ops 스크립트는 **cwd에서 `.git`을 찾아 대상 repo를 정한다** — steward 자기 repo가 cwd이면 **엉뚱한 repo를 대상으로 오작동**한다. 래퍼가 cwd를 `$OPS_WORKFLOW_ROOT`로 교정한다.
 - **`id`·`accepted_at`은 손으로 적지 않는다** — 스크립트가 채운다.
 
-steward 자신의 스킬은 **감사 전용 둘뿐**이다: `coherence`(정합성) · `conformance`(하네스 정합).
+steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · **`coherence`**(정합성 감사) · **`conformance`**(하네스 정합).
 
 ---
 
