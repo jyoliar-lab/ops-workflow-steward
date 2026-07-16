@@ -3,7 +3,8 @@
 
 허용:
   - $OPS_WORKFLOW_ROOT/docs/ops-workflow/**   (정책 문서 저작)
-  - $OPS_WORKFLOW_ROOT/.claude/**             (하네스 전파·정합)
+  - $OPS_WORKFLOW_ROOT/.claude/**             (하네스 전파·정합 — agent·skill)
+  - $OPS_WORKFLOW_ROOT/CLAUDE.md              (규약 — 하네스의 일부. 정책 변경 시 갱신)
   - $CLAUDE_PROJECT_DIR/** 단 .claude/ 제외    (steward 자기 repo: pilots.md·감사로그.
                                                자기 하네스(.claude)는 사람만 개정 — 설계 §5)
 그 외(다른 토픽 docs, 임의 경로)는 거부한다.
@@ -61,9 +62,10 @@ def main():
     if proj and under(fp, proj) and not under(fp, os.path.join(proj, ".claude")):
         allow()
 
-    # ops-workflow 허용 두 영역
+    # ops-workflow 허용: 정책 문서 · 하네스(.claude + 루트 CLAUDE.md 규약)
     if ops and (under(fp, os.path.join(ops, "docs", "ops-workflow"))
-                or under(fp, os.path.join(ops, ".claude"))):
+                or under(fp, os.path.join(ops, ".claude"))
+                or norm(fp) == norm(os.path.join(ops, "CLAUDE.md"))):
         allow()
 
     if not ops:

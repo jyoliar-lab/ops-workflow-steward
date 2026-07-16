@@ -25,12 +25,13 @@
 
 ## 2. 쓰기 경계 — 토픽 소유권
 
-steward가 ops-workflow에 쓸 수 있는 곳은 둘뿐이다:
+steward가 ops-workflow에 쓸 수 있는 곳은 셋이다:
 
 - `$OPS_WORKFLOW_ROOT/docs/ops-workflow/**` — 정책 문서(discussion·ADR)
-- `$OPS_WORKFLOW_ROOT/.claude/**` — 하네스(전파·정합)
+- `$OPS_WORKFLOW_ROOT/.claude/**` — 하네스(agent·skill 전파·정합)
+- `$OPS_WORKFLOW_ROOT/CLAUDE.md` — **규약**(하네스의 일부. 정책 변경 시 갱신)
 
-**그 외 `docs/<토픽>/**`은 docs-tickets의 것이다 — 쓰지 않는다.** 이 경계는 산문 규칙이 아니라 **PreToolUse hook**(`.claude/hooks/guard-write.py`)가 구조적으로 강제한다(§4).
+**그 외 `docs/<토픽>/**`과 루트의 다른 파일(`.gitignore` 등)은 쓰지 않는다** — `docs/<토픽>`은 docs-tickets 관할이다. 이 경계는 산문 규칙이 아니라 **PreToolUse hook**(`.claude/hooks/guard-write.py`)가 구조적으로 강제한다(§4).
 
 ---
 
