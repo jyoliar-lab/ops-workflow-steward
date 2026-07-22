@@ -29,5 +29,6 @@ status: active
 |---|---|---|---|
 | **ADR-0006** | `_lib/opsdoc.py`(`FROZEN` += `rejected`) · `adr/scripts/{freeze-check,accept,doc-path,supersede}.py` · `adr/SKILL.md` §2·§3·§4 · `agents/docs-tickets.md` · `CLAUDE.md` §3·§7 | 2026-07-16 | 동결 = **본문(의미)** 만 · **proposed 밖**(accepted·rejected·superseded) · **경로·포맷은 자유**(일괄 마이그레이션 가능). `freeze-check`의 경로-스캔 모드·`moved()`를 **삭제**했으므로, 0006이 뒤집히면 그 복원이 가장 큰 롤백이다 |
 | **ADR-0004** | `adr/SKILL.md`(`references` 인자·frontmatter 템플릿) · `CLAUDE.md` §7(역할 기반 가변성) | 2026-07-16 | 메타데이터 가변성을 **역할**에서 파생 — 분류(`topic`·`subjects`)는 확정 후에도 가변, 출처(`references`)는 동결 |
+| **ADR-0016** | **docs-tickets**: `ticket/scripts/create.py`(리프 저장소 게이트 — target 지정 XOR 명시적 부재, 본문 '저장소' 절, Project `Target Repos` 필드) · `ticket/SKILL.md` §2 · `CLAUDE.md` §5("리프는 저장소 맥락을 명시한다" 절) —— **ticket-engineer**: `CLAUDE.md` §1(target/ref 의미)·§2③·§3(target 확장 = 멈추고 묻기 → 갱신 필수) · `ticket-start/SKILL.md` ④ · `ticket-report/SKILL.md` ①② · `ticket-report/scripts/preflight.py`(검사 ⑤ 신설) | 2026-07-22 | 리프 티켓의 저장소 맥락(수정 대상 target = 권위·갱신 필수 / 참조 ref = 비완전 힌트·권장). GitHub Project #1에 `Target Repos` 텍스트 필드 필요. rejected 시 롤백: 게이트·본문 절·필드 기입·preflight ⑤ 제거, engineer 절차를 산문 판별로 복원 |
 
 *ADR-0009·0010(티켓 단일 타입·컨테이너/리프)은 하네스 델타가 없어 행이 없다 — 이미 있던 Issue Type 구조의 영수증일 뿐이다.*
