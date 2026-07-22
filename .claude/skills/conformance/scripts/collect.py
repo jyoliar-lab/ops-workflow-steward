@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""conformance 수집기 — accepted ADR + 하네스 파일 인벤토리 + pilots 로드.
+"""conformance 수집기 — accepted ADR + 피관리 하네스 파일 인벤토리 + pilots 로드.
 
-diff/판정은 agent가 수행한다. 대상 경로는 env var OPS_WORKFLOW_ROOT.
+피관리 하네스는 둘: docs-tickets($OPS_WORKFLOW_ROOT) · ticket-engineer($TICKET_ENGINEER_ROOT).
+diff/판정은 agent가 수행한다.
 """
 import os
 import sys
@@ -51,6 +52,14 @@ def steward_root():
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 
 
+def harness_inventory(root, patterns):
+    files = []
+    for pat in patterns:
+        for p in sorted(glob.glob(pat)):
+            files.append({"path": p, "bytes": os.path.getsize(p)})
+    return files
+
+
 def main():
     root = os.environ.get("OPS_WORKFLOW_ROOT")
     if not root:
@@ -70,14 +79,21 @@ def main():
                     "title": fm.get("title"),
                 })
 
-    harness = []
-    for pat in [
+    docs_tickets = harness_inventory(root, [
         os.path.join(root, "CLAUDE.md"),
         os.path.join(root, ".claude", "agents", "*.md"),
         os.path.join(root, ".claude", "skills", "*", "SKILL.md"),
-    ]:
-        for p in sorted(glob.glob(pat)):
-            harness.append({"path": p, "bytes": os.path.getsize(p)})
+    ])
+
+    eng = os.environ.get("TICKET_ENGINEER_ROOT")
+    ticket_engineer = None
+    if eng and os.path.isdir(eng):
+        ticket_engineer = harness_inventory(eng, [
+            os.path.join(eng, "CLAUDE.md"),
+            os.path.join(eng, ".claude", "agents", "*.md"),
+            os.path.join(eng, ".claude", "skills", "*", "SKILL.md"),
+            os.path.join(eng, ".claude", "hooks", "*"),
+        ])
 
     pilots_path = os.path.join(steward_root(), "pilots.md")
     pilots_present = os.path.isfile(pilots_path)
@@ -86,11 +102,20 @@ def main():
         "ops_root": root,
         "accepted_adrs": accepted,
         "accepted_count": len(accepted),
-        "harness_files": harness,
+        "harnesses": {
+            "docs-tickets": {"root": root, "files": docs_tickets},
+            "ticket-engineer": (
+                {"root": eng, "files": ticket_engineer}
+                if ticket_engineer is not None
+                else {"root": eng, "files": None,
+                      "note": "TICKET_ENGINEER_ROOT 미설정이거나 경로가 없다 — 이 하네스는 이번 감사에서 빠진다."}
+            ),
+        },
         "pilots_path": pilots_path,
         "pilots_present": pilots_present,
         "note": "accepted_adrs 가 0건이면 아직 전파할 대상이 없다(정상). "
-                "각 accepted ADR을 harness_files 와 대조하는 판정은 agent 가 SKILL.md 기준으로 수행한다. "
+                "각 accepted ADR이 어느 하네스를 구속하는지 매핑한 뒤 대조하는 판정은 "
+                "agent 가 SKILL.md 기준으로 수행한다. "
                 "pilots.md 의 파일럿 델타는 정합성 검사에서 제외한다.",
     }
     print(json.dumps(out, ensure_ascii=False, indent=2))

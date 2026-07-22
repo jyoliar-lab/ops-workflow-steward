@@ -1,6 +1,6 @@
 # ops-workflow-steward — 거버넌스 하네스
 
-이 저장소는 **ops-workflow의 정책을 관리**하는 메타 시스템이다. 형제 저장소 `ops-workflow`(운영되는 시스템)를 **밖에서** 저작·감사·교정하며, 그 자신은 ops-workflow의 정책에 **매이지 않는다**.
+이 저장소는 **ops-workflow의 정책을 관리**하는 메타 시스템이다. 형제 저장소 `ops-workflow`(운영되는 시스템)를 **밖에서** 저작·감사·교정하며, 그 자신은 ops-workflow의 정책에 **매이지 않는다**. 티켓을 집행하는 agent의 하네스(`ticket-engineer`)도 같은 방식으로 — 밖에서 — 관리한다(§6).
 
 ---
 
@@ -14,22 +14,25 @@
 
 ---
 
-## 1. 대상 경로 — env var (`OPS_WORKFLOW_ROOT`)
+## 1. 대상 경로 — env var
 
-- ops-workflow 로컬 경로는 **`OPS_WORKFLOW_ROOT`** env var로 주입한다. `.claude/settings.local.json`(**gitignored · PC별**)의 `env`에 둔다.
+- 대상 저장소 로컬 경로는 env var로 주입한다. `.claude/settings.local.json`(**gitignored · PC별**)의 `env`에 둔다:
+  - **`OPS_WORKFLOW_ROOT`** — ops-workflow 클론 경로
+  - **`TICKET_ENGINEER_ROOT`** — ticket-engineer(티켓 집행 agent 하네스) 클론 경로
 - 새 PC: `.claude/settings.local.example.json`을 `settings.local.json`으로 복사해 자기 경로를 채운다.
 - 모든 스크립트·셸은 이 변수로 대상을 찾는다. **절대경로를 하드코딩하지 않는다.**
-- ⚠ `env` 블록은 scope 간 **치환**(병합 아님)이다. `OPS_WORKFLOW_ROOT`가 유일 env면 `settings.local.json`에만 둔다.
+- ⚠ `env` 블록은 scope 간 **치환**(병합 아님)이다. 두 변수를 **같은 파일**(`settings.local.json`)에 함께 둔다.
 
 ---
 
 ## 2. 쓰기 경계 — 토픽 소유권
 
-steward가 ops-workflow에 쓸 수 있는 곳은 셋이다:
+steward가 밖에 쓸 수 있는 곳은 넷이다:
 
 - `$OPS_WORKFLOW_ROOT/docs/ops-workflow/**` — 정책 문서(discussion·ADR)
 - `$OPS_WORKFLOW_ROOT/.claude/**` — 하네스(agent·skill 전파·정합)
 - `$OPS_WORKFLOW_ROOT/CLAUDE.md` — **규약**(하네스의 일부. 정책 변경 시 갱신)
+- `$TICKET_ENGINEER_ROOT/**` — 티켓 집행 agent의 하네스(저장소 전체가 하네스다. §6)
 
 **그 외 `docs/<토픽>/**`과 루트의 다른 파일(`.gitignore` 등)은 쓰지 않는다** — `docs/<토픽>`은 docs-tickets 관할이다. 이 경계는 산문 규칙이 아니라 **PreToolUse hook**(`.claude/hooks/guard-write.py`)가 구조적으로 강제한다(§4).
 
@@ -64,6 +67,16 @@ steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · 
 
 ---
 
+## 6. 두 번째 피관리 하네스 — ticket-engineer
+
+`$TICKET_ENGINEER_ROOT`는 **티켓을 집행하는 엔지니어 agent의 하네스** 저장소다. steward와의 관계:
+
+- **지위가 다르다.** steward는 정책에 매이지 않지만(§0), ticket-engineer는 docs-tickets처럼 **정책에 매이는 쪽**이다 — 티켓 관련 `accepted` ADR이 생기면 그 하네스가 정책을 반영해야 하고, 그 정합은 `conformance` 감사 대상이다.
+- **개정 주체는 steward(+사람)다.** ticket-engineer agent는 자기 하네스를 스스로 고치지 않는다 — §5와 같은 원리이며, 그 강제는 ticket-engineer 쪽 하네스가 구조로 담는다(§4의 패턴).
+- **정책 실질의 방향이 반대다.** 이 저장소(steward)에 정책 실질이 스며들면 버그지만(§0), ticket-engineer 하네스에 accepted 정책이 반영돼 있는 것은 **정상**이다 — 그것이 전파의 결과물이다.
+
+---
+
 ## 파일럿
 
-`proposed`(미accept) 정책을 docs-tickets 하네스에 **시범 투입**할 때는 `pilots.md`에 기록한다. conformance 감사는 그 델타를 정합성 검사에서 제외한다.
+`proposed`(미accept) 정책을 피관리 하네스(docs-tickets·ticket-engineer)에 **시범 투입**할 때는 `pilots.md`에 기록한다. conformance 감사는 그 델타를 정합성 검사에서 제외한다.

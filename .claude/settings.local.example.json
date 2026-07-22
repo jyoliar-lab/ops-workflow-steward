@@ -1,6 +1,7 @@
 {
-  "//": "이 파일을 settings.local.json 으로 복사하고 OPS_WORKFLOW_ROOT 를 이 PC의 ops-workflow 클론 절대경로로 채운다. settings.local.json 은 gitignored 이며 PC마다 다르다.",
+  "//": "이 파일을 settings.local.json 으로 복사하고 두 경로를 이 PC의 클론 절대경로로 채운다. settings.local.json 은 gitignored 이며 PC마다 다르다. env 블록은 scope 간 치환(병합 아님)이므로 두 변수를 반드시 같은 파일에 둔다.",
   "env": {
-    "OPS_WORKFLOW_ROOT": "/absolute/path/to/ops-workflow"
+    "OPS_WORKFLOW_ROOT": "/absolute/path/to/ops-workflow",
+    "TICKET_ENGINEER_ROOT": "/absolute/path/to/ticket-engineer"
   }
 }

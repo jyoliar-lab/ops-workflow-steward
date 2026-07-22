@@ -5,12 +5,13 @@
   - $OPS_WORKFLOW_ROOT/docs/ops-workflow/**   (정책 문서 저작)
   - $OPS_WORKFLOW_ROOT/.claude/**             (하네스 전파·정합 — agent·skill)
   - $OPS_WORKFLOW_ROOT/CLAUDE.md              (규약 — 하네스의 일부. 정책 변경 시 갱신)
+  - $TICKET_ENGINEER_ROOT/**                  (티켓 집행 agent 하네스 — 저장소 전체. 설계 §6)
   - $CLAUDE_PROJECT_DIR/** 단 .claude/ 제외    (steward 자기 repo: pilots.md·감사로그.
                                                자기 하네스(.claude)는 사람만 개정 — 설계 §5)
 그 외(다른 토픽 docs, 임의 경로)는 거부한다.
 
-경계는 env var OPS_WORKFLOW_ROOT 로 동적이다(하드코딩 없음) — Claude Code 권한 패턴이
-env 확장을 못 하므로 이 hook 가 대신 강제한다.
+경계는 env var OPS_WORKFLOW_ROOT / TICKET_ENGINEER_ROOT 로 동적이다(하드코딩 없음) —
+Claude Code 권한 패턴이 env 확장을 못 하므로 이 hook 가 대신 강제한다.
 """
 import os
 import sys
@@ -56,6 +57,7 @@ def main():
         allow()
 
     ops = os.environ.get("OPS_WORKFLOW_ROOT")
+    eng = os.environ.get("TICKET_ENGINEER_ROOT")
     proj = os.environ.get("CLAUDE_PROJECT_DIR")
 
     # steward 자기 repo (단 .claude 제외 — 자기 하네스는 사람만)
@@ -68,13 +70,18 @@ def main():
                 or norm(fp) == norm(os.path.join(ops, "CLAUDE.md"))):
         allow()
 
+    # ticket-engineer 하네스 — 저장소 전체가 steward의 관리 대상 (설계 §6)
+    if eng and under(fp, eng):
+        allow()
+
     if not ops:
         out_deny("OPS_WORKFLOW_ROOT 미설정 — 대상 경계를 확인할 수 없어 거부한다. "
                  ".claude/settings.local.json 을 확인하라.")
     out_deny(
-        "쓰기 경계 위반: %s — steward는 $OPS_WORKFLOW_ROOT/docs/ops-workflow/** 와 "
-        "$OPS_WORKFLOW_ROOT/.claude/** 만 편집한다(자기 repo는 .claude 제외). "
-        "다른 토픽 docs는 docs-tickets 관할이다." % fp
+        "쓰기 경계 위반: %s — steward는 $OPS_WORKFLOW_ROOT/docs/ops-workflow/** · "
+        "$OPS_WORKFLOW_ROOT/.claude/** · $TICKET_ENGINEER_ROOT/** 만 편집한다"
+        "(자기 repo는 .claude 제외). 다른 토픽 docs는 docs-tickets 관할이다. "
+        "TICKET_ENGINEER_ROOT 미설정이면 settings.local.json 을 확인하라." % fp
     )
 
 
