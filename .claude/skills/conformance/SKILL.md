@@ -22,9 +22,11 @@ description: accepted ADR과 피관리 하네스(docs-tickets·ticket-engineer)�
    - **역행** — 하네스가 옛(superseded) 정책을 아직 담고 있다
 4. 교정은 `$OPS_WORKFLOW_ROOT/.claude/**` 또는 `$TICKET_ENGINEER_ROOT/**`를 **직접 편집**한다(쓰기 경계 안 — hook가 허용). 커밋 메시지에 **근거 ADR id**를 명시한다.
 
-## 메타-프로세스 특별 규칙
+## 커밋 단위 — 정책과 그 반영은 함께 움직인다
 
-`accepted` ADR이 "ADR을 어떻게 만드나" 자체(메타-프로세스)를 바꿨다면, **대응하는 ops-workflow 스크립트 변경도 같은 작업 단위**에 포함한다 — 정책과 그 집행 도구는 함께 움직인다. 안 그러면 도구와 정책이 어긋난다.
+**ADR의 생성·수정(supersede 포함)이 하네스 델타를 낳으면, 그 델타는 ADR과 한 작업 단위로 커밋한다.** 묶음 규칙(같은 repo = 같은 커밋 · ticket-engineer = ADR id 명시한 동반 커밋 · 파일럿 = `pilots.md` 행 포함)과 승인 절차는 **steward `CLAUDE.md` §3 "커밋 단위"** 가 정본이다.
+
+그 한 사례가 메타-프로세스다: `accepted` ADR이 "ADR을 어떻게 만드나" 자체를 바꿨다면, **대응하는 ops-workflow 스크립트 변경도 같은 작업 단위**에 포함한다 — 안 그러면 도구와 정책이 어긋난다.
 
 ## 판정은 기계가 아니다
 

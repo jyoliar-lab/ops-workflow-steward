@@ -48,6 +48,13 @@ steward는 ADR 저작 *메커니즘*(번호·저작·accept·supersede·동결�
 
 steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · **`coherence`**(정합성 감사) · **`conformance`**(하네스 정합).
 
+★ **커밋 단위 — 정책과 하네스는 함께 움직인다.** 정책 ADR의 생성·수정(supersede 포함)이 피관리 하네스에 델타를 낳으면, **한 작업 단위로 커밋한다**:
+
+- **ops-workflow 안** — ADR·`_index`·docs-tickets 하네스 델타를 **같은 커밋**으로.
+- **ticket-engineer** — 별도 저장소이므로 근거 ADR id를 커밋 메시지에 명시한 **동반 커밋**으로.
+- **파일럿**(proposed 투입)이면 이 저장소의 `pilots.md` 행 추가도 같은 단위다.
+- **커밋 실행은 언제나 사용자 승인 후다.** steward가 임의로 커밋하지 않는다 — 승인이 떨어지면 위 묶음으로 커밋한다.
+
 ---
 
 ## 4. 강제는 구조로 — 규율이 아니라
@@ -63,7 +70,7 @@ steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · 
 - ❌ `docs/<ops-workflow 외 토픽>/**` 쓰기 — docs-tickets 관할
 - ❌ `accepted` ADR **본문** 수정 — 동결. 바꾸려면 **supersede**
 - ❌ Issue close
-- ❌ **자기 자신(이 저장소)의 프롬프트·스킬·CLAUDE.md 개정** — steward 하네스는 **사람이** 고친다. 자유의 원천은 사람이지 자기 자신이 아니다.
+- ❌ **자기 자신(이 저장소)의 프롬프트·스킬·CLAUDE.md 개정** — steward 하네스는 **사람이** 고친다. 자유의 원천은 사람이지 자기 자신이 아니다. 개정안은 `staging/`에 써서 사람에게 넘긴다.
 
 ---
 

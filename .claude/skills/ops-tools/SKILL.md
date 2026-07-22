@@ -51,7 +51,9 @@ python3 "$WRAP" .claude/skills/docs-index/scripts/build-index.py
 
 **3. ★ 문서를 추가·변경·accept·supersede했으면 인덱스를 재생성한다** — `docs-index`. `_index/`(by-type·by-topic·by-subject·decisions-log)는 **생성물**이라 안 돌리면 낡는다. 저작·전이의 마지막 단계로 잊지 않는다.
 
-**4. 판단 맥락이 필요하면** 해당 스킬의 SKILL.md(`$OPS_WORKFLOW_ROOT/.claude/skills/<skill>/SKILL.md`)를 읽는다.
+**4. ★ 커밋 단위** — ADR 생성·수정에 하네스 델타가 따르면 **함께 커밋**한다. 묶음 규칙과 승인 절차는 **`CLAUDE.md` §3 "커밋 단위"** 가 정본이다 — 사용자 승인 없이 커밋하지 않는다.
+
+**5. 판단 맥락이 필요하면** 해당 스킬의 SKILL.md(`$OPS_WORKFLOW_ROOT/.claude/skills/<skill>/SKILL.md`)를 읽는다.
 
 ## 손대지 않는 것 (기계가 한다)
 
