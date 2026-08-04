@@ -18,5 +18,8 @@
         ]
       }
     ]
-  }
+  },
+  "additionalDirectories": [
+    "/Users/jyo/IdeaProjects/ticket-engineer"
+  ]
 }

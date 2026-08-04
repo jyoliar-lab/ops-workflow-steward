@@ -8,10 +8,17 @@
   - $TICKET_ENGINEER_ROOT/**                  (티켓 집행 agent 하네스 — 저장소 전체. 설계 §6)
   - $CLAUDE_PROJECT_DIR/** 단 .claude/ 제외    (steward 자기 repo: pilots.md·감사로그.
                                                자기 하네스(.claude)는 사람만 개정 — 설계 §5)
+  - .claude/write-allow.txt 에 적힌 루트들     (일시 허용 — 사람이 쓰고 지운다. 아래 참조)
 그 외(다른 토픽 docs, 임의 경로)는 거부한다.
 
 경계는 env var OPS_WORKFLOW_ROOT / TICKET_ENGINEER_ROOT 로 동적이다(하드코딩 없음) —
 Claude Code 권한 패턴이 env 확장을 못 하므로 이 hook 가 대신 강제한다.
+
+★ 일시 허용 — `.claude/write-allow.txt`(gitignored · 사람만 편집):
+  절대경로를 한 줄씩 적는다. `#` 시작 줄은 주석. env 가 아니라 파일인 이유:
+  env 는 세션 시작 시 고정되지만 이 파일은 **매 호출 읽힌다** — "잠깐 허용"을
+  세션 재시작 없이 켜고(파일 작성) 끈다(파일 삭제). 이 파일은 .claude/ 안에 있으므로
+  steward 자신은 쓸 수 없다 — 허용의 주체는 언제나 사람이다.
 """
 import os
 import sys
@@ -74,6 +81,19 @@ def main():
     if eng and under(fp, eng):
         allow()
 
+    # 일시 허용 루트 — 사람이 .claude/write-allow.txt 에 적어 둔 경로 (docstring 참조)
+    if proj:
+        allow_file = os.path.join(proj, ".claude", "write-allow.txt")
+        if os.path.isfile(allow_file):
+            try:
+                with open(allow_file, encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and under(fp, line):
+                            allow()
+            except OSError:
+                pass  # 읽기 실패 = 허용 없음. 기본 경계로 떨어진다.
+
     if not ops:
         out_deny("OPS_WORKFLOW_ROOT 미설정 — 대상 경계를 확인할 수 없어 거부한다. "
                  ".claude/settings.local.json 을 확인하라.")
@@ -81,7 +101,7 @@ def main():
         "쓰기 경계 위반: %s — steward는 $OPS_WORKFLOW_ROOT/docs/ops-workflow/** · "
         "$OPS_WORKFLOW_ROOT/.claude/** · $TICKET_ENGINEER_ROOT/** 만 편집한다"
         "(자기 repo는 .claude 제외). 다른 토픽 docs는 docs-tickets 관할이다. "
-        "TICKET_ENGINEER_ROOT 미설정이면 settings.local.json 을 확인하라." % fp
+        "일시 허용이 필요하면 사람이 .claude/write-allow.txt 에 경로를 적는다." % fp
     )
 
 
