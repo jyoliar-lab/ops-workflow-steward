@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """conformance 수집기 — accepted ADR + 피관리 하네스 파일 인벤토리 + pilots 로드.
 
-피관리 하네스는 둘: docs-tickets($OPS_WORKFLOW_ROOT) · ticket-engineer($TICKET_ENGINEER_ROOT).
+피관리 하네스는 두 저장소: ops-workflow($OPS_WORKFLOW_ROOT — 규약·공통 .claude·harness/<역할>) ·
+ticket-engineer($TICKET_ENGINEER_ROOT).
 diff/판정은 agent가 수행한다.
 """
 import os
@@ -79,10 +80,14 @@ def main():
                     "title": fm.get("title"),
                 })
 
-    docs_tickets = harness_inventory(root, [
+    ops_workflow = harness_inventory(root, [
         os.path.join(root, "CLAUDE.md"),
+        os.path.join(root, ".claude", "rules", "*.md"),
         os.path.join(root, ".claude", "agents", "*.md"),
         os.path.join(root, ".claude", "skills", "*", "SKILL.md"),
+        os.path.join(root, ".claude", "hooks", "*"),
+        os.path.join(root, "harness", "*", "CLAUDE.md"),
+        os.path.join(root, "harness", "*", ".claude", "skills", "*", "SKILL.md"),
     ])
 
     eng = os.environ.get("TICKET_ENGINEER_ROOT")
@@ -90,6 +95,7 @@ def main():
     if eng and os.path.isdir(eng):
         ticket_engineer = harness_inventory(eng, [
             os.path.join(eng, "CLAUDE.md"),
+            os.path.join(eng, ".claude", "rules", "*.md"),
             os.path.join(eng, ".claude", "agents", "*.md"),
             os.path.join(eng, ".claude", "skills", "*", "SKILL.md"),
             os.path.join(eng, ".claude", "hooks", "*"),
@@ -103,7 +109,7 @@ def main():
         "accepted_adrs": accepted,
         "accepted_count": len(accepted),
         "harnesses": {
-            "docs-tickets": {"root": root, "files": docs_tickets},
+            "ops-workflow": {"root": root, "files": ops_workflow},
             "ticket-engineer": (
                 {"root": eng, "files": ticket_engineer}
                 if ticket_engineer is not None

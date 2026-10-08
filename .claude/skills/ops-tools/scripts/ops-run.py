@@ -7,9 +7,12 @@
 (_lib/opsdoc.repo_root). steward 는 자기 repo(별도 .git)가 cwd 이므로, 절대경로로만
 호출하면 스크립트가 **steward repo 를 대상으로 오작동**한다. 이 래퍼가 cwd 를 대상 repo 로
 바꿔 그 실수를 원천 차단한다.
+
+실행은 `python3 <script>`와 동일한 semantics의 자식 프로세스(execv)다 — runpy.run_path 는
+스크립트 디렉터리를 sys.path 에 넣지 않아 `import _bootstrap`·`import repo_context` 같은
+같은 디렉터리 import 가 깨진다.
 """
 import os
-import runpy
 import sys
 
 root = os.environ.get("OPS_WORKFLOW_ROOT")
@@ -25,6 +28,5 @@ target = rel if os.path.isabs(rel) else os.path.join(root, rel)
 if not os.path.isfile(target):
     sys.exit("대상 스크립트가 없다: %s" % target)
 
-os.chdir(root)                       # ★ repo_root 가 여기서 ops-workflow 의 .git 을 찾는다
-sys.argv = [target] + sys.argv[2:]   # 대상 스크립트가 자기 인자를 그대로 보도록
-runpy.run_path(target, run_name="__main__")
+os.chdir(root)                                                     # ★ repo_root 가 여기서 ops-workflow 의 .git 을 찾는다
+os.execv(sys.executable, [sys.executable, target] + sys.argv[2:])  # 직접 실행과 동일 — 스크립트 디렉터리가 sys.path[0]

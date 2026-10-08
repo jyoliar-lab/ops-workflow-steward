@@ -3,7 +3,8 @@
 
 허용:
   - $OPS_WORKFLOW_ROOT/docs/ops-workflow/**   (정책 문서 저작)
-  - $OPS_WORKFLOW_ROOT/.claude/**             (하네스 전파·정합 — agent·skill)
+  - $OPS_WORKFLOW_ROOT/.claude/**             (공통 하네스 — skill·hook·rules)
+  - $OPS_WORKFLOW_ROOT/harness/**             (역할별 하네스 — design-partner·adr-judge)
   - $OPS_WORKFLOW_ROOT/CLAUDE.md              (규약 — 하네스의 일부. 정책 변경 시 갱신)
   - $TICKET_ENGINEER_ROOT/**                  (티켓 집행 agent 하네스 — 저장소 전체. 설계 §6)
   - $CLAUDE_PROJECT_DIR/** 단 .claude/ 제외    (steward 자기 repo: pilots.md·감사로그.
@@ -71,9 +72,10 @@ def main():
     if proj and under(fp, proj) and not under(fp, os.path.join(proj, ".claude")):
         allow()
 
-    # ops-workflow 허용: 정책 문서 · 하네스(.claude + 루트 CLAUDE.md 규약)
+    # ops-workflow 허용: 정책 문서 · 하네스(.claude · harness/<역할> · 루트 CLAUDE.md 규약)
     if ops and (under(fp, os.path.join(ops, "docs", "ops-workflow"))
                 or under(fp, os.path.join(ops, ".claude"))
+                or under(fp, os.path.join(ops, "harness"))
                 or norm(fp) == norm(os.path.join(ops, "CLAUDE.md"))):
         allow()
 
@@ -98,9 +100,9 @@ def main():
         out_deny("OPS_WORKFLOW_ROOT 미설정 — 대상 경계를 확인할 수 없어 거부한다. "
                  ".claude/settings.local.json 을 확인하라.")
     out_deny(
-        "쓰기 경계 위반: %s — steward는 $OPS_WORKFLOW_ROOT/docs/ops-workflow/** · "
-        "$OPS_WORKFLOW_ROOT/.claude/** · $TICKET_ENGINEER_ROOT/** 만 편집한다"
-        "(자기 repo는 .claude 제외). 다른 토픽 docs는 docs-tickets 관할이다. "
+        "쓰기 경계 위반: %s — steward는 $OPS_WORKFLOW_ROOT의 docs/ops-workflow/** · CLAUDE.md · "
+        ".claude/** · harness/** 와 $TICKET_ENGINEER_ROOT/** 만 편집한다"
+        "(자기 repo는 .claude 제외). 다른 토픽 docs는 design-partner 관할이다. "
         "일시 허용이 필요하면 사람이 .claude/write-allow.txt 에 경로를 적는다." % fp
     )
 

@@ -9,7 +9,7 @@
 이 하네스에는 ops-workflow **정책의 실질**(무엇을 결정했는가)이 **들어 있지 않다.** 그래야 그 정책을 사용자와 함께 재고·변경할 수 있다.
 
 - ops-workflow의 `CLAUDE.md`·ADR은 여기서 **지시가 아니라 편집 대상 파일**이다.
-- 그러므로 이 문서는 2-플레인·문서 3종·ADR 작성 규약 같은 **정책 내용을 재진술하지 않는다.** 필요하면 `$OPS_WORKFLOW_ROOT`의 ADR 코퍼스를 **읽는다.**
+- 그러므로 이 문서는 **정책 내용을 재진술하지 않는다.** 필요하면 `$OPS_WORKFLOW_ROOT`의 ADR 코퍼스를 **읽는다.**
 - 여기에 정책 실질 문장이 새어 들어오면 그것은 버그다 — steward의 자유가 깨진 것이다.
 
 ---
@@ -30,11 +30,11 @@
 steward가 밖에 쓸 수 있는 곳은 넷이다:
 
 - `$OPS_WORKFLOW_ROOT/docs/ops-workflow/**` — 정책 문서(discussion·ADR)
-- `$OPS_WORKFLOW_ROOT/.claude/**` — 하네스(agent·skill 전파·정합)
+- `$OPS_WORKFLOW_ROOT/.claude/**` · `harness/**` — 하네스(공통 스킬·hook · 역할별 프롬프트와 스킬)
 - `$OPS_WORKFLOW_ROOT/CLAUDE.md` — **규약**(하네스의 일부. 정책 변경 시 갱신)
 - `$TICKET_ENGINEER_ROOT/**` — 티켓 집행 agent의 하네스(저장소 전체가 하네스다. §6)
 
-**그 외 `docs/<토픽>/**`과 루트의 다른 파일(`.gitignore`등)은 쓰지 않는다** —`docs/<토픽>`은 docs-tickets 관할이다. 이 경계는 산문 규칙이 아니라 **PreToolUse hook**(`.claude/hooks/guard-write.py`)가 구조적으로 강제한다(§4).
+**그 외 `docs/<토픽>/**`과 루트의 다른 파일(`.gitignore`등)은 쓰지 않는다** —`docs/<토픽>`은 그 토픽을 다루는 역할(design-partner)의 관할이다. 이 경계는 산문 규칙이 아니라 **PreToolUse hook**(`.claude/hooks/guard-write.py`)가 구조적으로 강제한다(§4).
 
 ---
 
@@ -50,7 +50,7 @@ steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · 
 
 ★ **커밋 단위 — 정책과 하네스는 함께 움직인다.** 정책 ADR의 생성·수정(supersede 포함)이 피관리 하네스에 델타를 낳으면, **한 작업 단위로 커밋한다**:
 
-- **ops-workflow 안** — ADR·`_index`·docs-tickets 하네스 델타를 **같은 커밋**으로.
+- **ops-workflow 안** — ADR·`_index`·하네스 델타를 **같은 커밋**으로.
 - **ticket-engineer** — 별도 저장소이므로 근거 ADR id를 커밋 메시지에 명시한 **동반 커밋**으로.
 - **파일럿**(proposed 투입)이면 이 저장소의 `pilots.md` 행 추가도 같은 단위다.
 - **커밋 실행은 언제나 사용자 승인 후다.** steward가 임의로 커밋하지 않는다 — 승인이 떨어지면 위 묶음으로 커밋한다.
@@ -62,13 +62,13 @@ steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · 
 - 쓰기 경계: **PreToolUse hook**가 `$OPS_WORKFLOW_ROOT` 밖·타 토픽 Write/Edit를 거부한다.
 - 동결·번호·게이트: ops-workflow의 스크립트가 거부한다(exit 1). steward는 **우회하지 않는다** — 왜 막혔는지 읽는다.
 - "하지 마세요"를 최소화하고 **할 수 없게** 만든다.
-- - **강제 지점이 말하는 것을 프롬프트에 옮겨 적지 않는다** — 원천이 둘이면 한쪽만 고쳐진다. 넣기 전에 묻는다: _스크립트가 실패할 때 말하는가?_ 미리 말할 것은 **금지·요구**(모르면 시도하거나 빠뜨린다) · **트리거**(모르면 안 부른다) · **성공 경로**(스크립트가 침묵한다)뿐.
+- **강제 지점이 말하는 것을 프롬프트에 옮겨 적지 않는다** — 원천이 둘이면 한쪽만 고쳐진다. 넣기 전에 묻는다: _스크립트가 실패할 때 말하는가?_ 미리 말할 것은 **금지·요구**(모르면 시도하거나 빠뜨린다) · **트리거**(모르면 안 부른다) · **성공 경로**(스크립트가 침묵한다)뿐.
 
 ---
 
 ## 5. 경계 — steward가 하지 않는 것
 
-- ❌ `docs/<ops-workflow 외 토픽>/**` 쓰기 — docs-tickets 관할
+- ❌ `docs/<ops-workflow 외 토픽>/**` 쓰기 — 그 토픽 역할의 관할
 - ❌ `accepted` ADR **본문** 수정 — 동결. 바꾸려면 **supersede**
 - ❌ Issue close
 - ❌ **자기 자신(이 저장소)의 프롬프트·스킬·CLAUDE.md 개정** — steward 하네스는 **사람이** 고친다. 자유의 원천은 사람이지 자기 자신이 아니다. 개정안은 `staging/`에 써서 사람에게 넘긴다.
@@ -79,7 +79,7 @@ steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · 
 
 `$TICKET_ENGINEER_ROOT`는 **티켓을 집행하는 엔지니어 agent의 하네스** 저장소다. steward와의 관계:
 
-- **지위가 다르다.** steward는 정책에 매이지 않지만(§0), ticket-engineer는 docs-tickets처럼 **정책에 매이는 쪽**이다 — 티켓 관련 `accepted` ADR이 생기면 그 하네스가 정책을 반영해야 하고, 그 정합은 `conformance` 감사 대상이다.
+- **지위가 다르다.** steward는 정책에 매이지 않지만(§0), ticket-engineer는 ops-workflow의 역할 하네스(design-partner·adr-judge)처럼 **정책에 매이는 쪽**이다 — 티켓 관련 `accepted` ADR이 생기면 그 하네스가 정책을 반영해야 하고, 그 정합은 `conformance` 감사 대상이다.
 - **개정 주체는 steward(+사람)다.** ticket-engineer agent는 자기 하네스를 스스로 고치지 않는다 — §5와 같은 원리이며, 그 강제는 ticket-engineer 쪽 하네스가 구조로 담는다(§4의 패턴).
 - **정책 실질의 방향이 반대다.** 이 저장소(steward)에 정책 실질이 스며들면 버그지만(§0), ticket-engineer 하네스에 accepted 정책이 반영돼 있는 것은 **정상**이다 — 그것이 전파의 결과물이다.
 
@@ -87,4 +87,4 @@ steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · 
 
 ## 파일럿
 
-`proposed`(미accept) 정책을 피관리 하네스(docs-tickets·ticket-engineer)에 **시범 투입**할 때는 `pilots.md`에 기록한다. conformance 감사는 그 델타를 정합성 검사에서 제외한다.
+`proposed`(미accept) 정책을 피관리 하네스(ops-workflow 역할 하네스·ticket-engineer)에 **시범 투입**할 때는 `pilots.md`에 기록한다. conformance 감사는 그 델타를 정합성 검사에서 제외한다.

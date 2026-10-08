@@ -6,7 +6,7 @@ status: active
 
 # pilots — proposed 정책의 하네스 시범 투입 기록
 
-`proposed`(미accept) 정책을 docs-tickets 하네스에 **시범 투입**할 때 여기 기록한다. 표식이 없으면 `conformance` 감사가 이 **의도된 비정합**을 드리프트로 오탐한다.
+`proposed`(미accept) 정책을 피관리 하네스(ops-workflow 역할 하네스·ticket-engineer)에 **시범 투입**할 때 여기 기록한다. 표식이 없으면 `conformance` 감사가 이 **의도된 비정합**을 드리프트로 오탐한다.
 
 ## 규칙
 

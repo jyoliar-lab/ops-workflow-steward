@@ -9,7 +9,7 @@ ops-workflow의 정책 ADR들이 서로 모순·충돌하지 않는지 감사한
 
 ## 절차
 
-1. `python3 "$CLAUDE_SKILL_DIR/scripts/collect.py"` 실행 → ADR 인벤토리 + 참조 그래프 + **후보 쌍**(subject/topic/parent 공유) JSON.
+1. `python3 "${CLAUDE_SKILL_DIR}/scripts/collect.py"` 실행 → ADR 인벤토리 + 참조 그래프 + **후보 쌍**(subject/topic/parent 공유) JSON.
 2. 후보 쌍을 우선, 그다음 전수로 각 쌍의 **본문을 읽어** 아래 유형으로 판정한다.
 3. 충돌·의심 목록을 **사용자에게 보고**한다(근거 ADR id + 유형 + 발췌). **`docs/`에 보고서를 쓰지 않는다** — 터미널 + 필요 시 이 저장소의 감사 로그.
 
