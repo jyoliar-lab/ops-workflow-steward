@@ -11,7 +11,7 @@ ops-workflow-steward/
 ├── staging/                     gitignored — steward가 사람에게 넘기는 개정안·마찰 로그
 └── .claude/
     ├── agents/policy-steward.md 역할 프롬프트 (claude --agent policy-steward)
-    ├── skills/                  ops-tools(저작 도구 구동) · conformance(하네스 정합·전파)
+    ├── skills/                  ops-tools(저작 도구 구동) · conformance(하네스 정합·전파) · harness-authoring(하네스 파일 저작 규율)
     ├── rules/                   규약의 일부
     ├── hooks/guard-write.py     쓰기 경계·전이 금지 hook
     ├── settings.json            hook 등록 · 권한 — 공통
