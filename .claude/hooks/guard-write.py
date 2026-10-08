@@ -12,6 +12,8 @@
   - .claude/write-allow.txt 에 적힌 루트들     (일시 허용 — 사람이 쓰고 지운다. 아래 참조)
 그 외(다른 토픽 docs, 임의 경로)는 거부한다.
 
+Bash: accept.py · supersede.py · unaccept.py 실행은 거부한다 — 동결선 전이는 adr-judge의 것(설계 §5).
+
 경계는 env var OPS_WORKFLOW_ROOT / TICKET_ENGINEER_ROOT 로 동적이다(하드코딩 없음) —
 Claude Code 권한 패턴이 env 확장을 못 하므로 이 hook 가 대신 강제한다.
 
@@ -22,6 +24,7 @@ Claude Code 권한 패턴이 env 확장을 못 하므로 이 hook 가 대신 강
   steward 자신은 쓸 수 없다 — 허용의 주체는 언제나 사람이다.
 """
 import os
+import re
 import sys
 import json
 
@@ -57,7 +60,14 @@ def main():
     except Exception:
         allow()  # 입력 파싱 불가 → 가드 불가. 세션을 브릭하지 않는다(fail-open).
 
-    if data.get("tool_name", "") not in ("Write", "Edit", "MultiEdit"):
+    tool = data.get("tool_name", "")
+    if tool == "Bash":
+        cmd = (data.get("tool_input") or {}).get("command", "")
+        if re.search(r"\b(accept|supersede|unaccept)\.py\b", cmd):
+            out_deny("동결선 전이(accept·supersede·unaccept)는 adr-judge와 사람의 것이다(CLAUDE.md §5) — "
+                     "초안 저자는 심사하지 않는다. 초안을 proposed로 두고 사람에게 adr-judge 세션을 요청한다.")
+        allow()
+    if tool not in ("Write", "Edit", "MultiEdit"):
         allow()
 
     fp = (data.get("tool_input") or {}).get("file_path")
