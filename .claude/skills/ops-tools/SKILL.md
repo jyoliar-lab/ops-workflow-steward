@@ -40,7 +40,7 @@ python3 "$WRAP" .claude/skills/adr/scripts/next-id.py
 python3 "$WRAP" .claude/skills/adr/scripts/doc-path.py --topic ops-workflow --id ADR-0009 --slug <slug>
 python3 "$WRAP" .claude/skills/adr/scripts/freeze-check.py <path>
 
-# ticket — 정책 관련 Issue (design-partner 하네스, 필요 시)
+# ticket — 정책 관련 Issue (design-partner 하네스, 필요 시). 저장소·선행 의존 답은 게이트가 요구한다 — 거부 사유를 읽는다
 python3 "$WRAP" harness/design-partner/.claude/skills/ticket/scripts/create.py --type task --title "..." --body-file <path> [--adr ADR-NNNN]
 python3 "$WRAP" harness/design-partner/.claude/skills/ticket/scripts/link-sub.py --parent <N> --child <M>
 

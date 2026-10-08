@@ -43,7 +43,7 @@ steward는 정책 ADR(`topic: ops-workflow`)의 **초안**을 `proposed`까지 �
 | 쓰기 경계 — `$OPS_WORKFLOW_ROOT`의 `docs/ops-workflow/**`·`CLAUDE.md`·`.claude/**`·`harness/**`, `$TICKET_ENGINEER_ROOT/**`, 자기 repo(`.claude/` 제외) | `guard-write.py`(PreToolUse, Write·Edit)가 그 밖을 거부한다. 거부 사유에 허용 범위와 대안이 들어 있다 |
 | 자기 하네스(`.claude/`)는 사람만 고친다 (CLAUDE.md §5) | 같은 hook가 자기 repo의 `.claude/**` Write·Edit를 거부한다. **Bash 경유(`sed -i`·리다이렉션·heredoc)는 막지 않는다** — 그 경로는 §5 산문이 유일한 보호다 |
 | 동결선 전이 금지 — accept·supersede·unaccept는 adr-judge의 것 (§5) | `guard-write.py`(PreToolUse, Bash)가 `accept.py`·`supersede.py`·`unaccept.py`가 든 명령을 거부한다 |
-| Issue close 금지 (§5) | 산문만 — hook는 아직 막지 않는다 |
+| Issue close 금지 (§5) | 같은 Bash 분기가 `gh issue close`를 거부한다 |
 | 일시 허용 | 사람이 `.claude/write-allow.txt`에 절대경로를 한 줄씩 적는다(`#` 주석). 매 호출 읽히므로 세션 재시작 없이 켜고(작성) 끈다(삭제). `.claude/` 안이라 steward 자신은 쓸 수 없다. **임시다 — 끝나면 지운다** |
 | 동결·번호·게이트 | ops-workflow의 스크립트가 거부한다(exit 1) |
 | env 미설정 | `OPS_WORKFLOW_ROOT`가 없으면 hook가 모든 밖 쓰기를 거부하고, 스크립트는 exit 1 |

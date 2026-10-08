@@ -13,6 +13,7 @@
 그 외(다른 토픽 docs, 임의 경로)는 거부한다.
 
 Bash: accept.py · supersede.py · unaccept.py 실행은 거부한다 — 동결선 전이는 adr-judge의 것(설계 §5).
+      `gh issue close`는 거부한다 — close는 사람의 것(설계 §5).
 
 경계는 env var OPS_WORKFLOW_ROOT / TICKET_ENGINEER_ROOT 로 동적이다(하드코딩 없음) —
 Claude Code 권한 패턴이 env 확장을 못 하므로 이 hook 가 대신 강제한다.
@@ -63,6 +64,9 @@ def main():
     tool = data.get("tool_name", "")
     if tool == "Bash":
         cmd = (data.get("tool_input") or {}).get("command", "")
+        if re.search(r"\bgh\s+issue\s+close\b", cmd):
+            out_deny("Issue close는 사람의 것이다(CLAUDE.md §5) — steward는 닫지 않는다. "
+                     "닫을 때가 됐으면 사람에게 알린다.")
         if re.search(r"\b(accept|supersede|unaccept)\.py\b", cmd):
             out_deny("동결선 전이(accept·supersede·unaccept)는 adr-judge와 사람의 것이다(CLAUDE.md §5) — "
                      "초안 저자는 심사하지 않는다. 초안을 proposed로 두고 사람에게 adr-judge 세션을 요청한다.")
