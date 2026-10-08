@@ -20,7 +20,7 @@ description: 공표된 정책 ADR과 피관리 하네스(ops-workflow 역할 하
    - **위반** — 하네스가 ADR에 반하는 지시를 담았다
    - **누락** — ADR이 요구하는 제약이 하네스에 없다
    - **역행** — 하네스가 옛 정책을 아직 담고 있다 — `superseded`된 것, 또는 `proposed` 본문이 고쳐졌는데 하네스는 옛 본문을 따르는 것
-4. 교정은 `$OPS_WORKFLOW_ROOT/.claude/**` 또는 `$TICKET_ENGINEER_ROOT/**`를 **직접 편집**한다(쓰기 경계 안 — hook가 허용). 커밋 메시지에 **근거 ADR id**를 명시한다.
+4. 교정은 `$OPS_WORKFLOW_ROOT/.claude/**` 또는 `$TICKET_ENGINEER_ROOT/**`를 **직접 편집**한다(쓰기 경계 안 — CLAUDE.md §2). 커밋 메시지에 **근거 ADR id**를 명시한다.
 
 ## 커밋 단위 — 정책과 그 반영은 함께 움직인다
 

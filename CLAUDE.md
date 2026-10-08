@@ -16,12 +16,7 @@
 
 ## 1. 대상 경로 — env var
 
-- 대상 저장소 로컬 경로는 env var로 주입한다. `.claude/settings.local.json`(**gitignored · PC별**)의 `env`에 둔다:
-  - **`OPS_WORKFLOW_ROOT`** — ops-workflow 클론 경로
-  - **`TICKET_ENGINEER_ROOT`** — ticket-engineer(티켓 집행 agent 하네스) 클론 경로
-- 새 PC: `.claude/settings.local.example.json`을 `settings.local.json`으로 복사해 자기 경로를 채운다.
-- 모든 스크립트·셸은 이 변수로 대상을 찾는다. **절대경로를 하드코딩하지 않는다.**
-- ⚠ `env` 블록은 scope 간 **치환**(병합 아님)이다. 두 변수를 **같은 파일**(`settings.local.json`)에 함께 둔다.
+대상 저장소의 로컬 경로는 env var **`OPS_WORKFLOW_ROOT`**(ops-workflow 클론)·**`TICKET_ENGINEER_ROOT`**(ticket-engineer 클론)로 온다. 모든 스크립트·셸은 이 변수로 대상을 찾는다.
 
 ---
 
@@ -34,7 +29,7 @@ steward가 밖에 쓸 수 있는 곳은 넷이다:
 - `$OPS_WORKFLOW_ROOT/CLAUDE.md` — **규약**(하네스의 일부. 정책 변경 시 갱신)
 - `$TICKET_ENGINEER_ROOT/**` — 티켓 집행 agent의 하네스(저장소 전체가 하네스다. §6)
 
-**그 외 `docs/<토픽>/**`과 루트의 다른 파일(`.gitignore`등)은 쓰지 않는다** —`docs/<토픽>`은 그 토픽을 다루는 역할(design-partner)의 관할이다. 이 경계는 산문 규칙이 아니라 **PreToolUse hook**(`.claude/hooks/guard-write.py`)가 구조적으로 강제한다(§4).
+**그 외 `docs/<토픽>/**`과 루트의 다른 파일(`.gitignore`등)은 쓰지 않는다** —`docs/<토픽>`은 그 토픽을 다루는 역할(design-partner)의 관할이다.
 
 ---
 
@@ -61,10 +56,9 @@ steward 자신의 스킬은 둘이다: **`ops-tools`**(저작 도구 구동) · 
 
 ## 4. 강제는 구조로 — 규율이 아니라
 
-- 쓰기 경계: **PreToolUse hook**가 `$OPS_WORKFLOW_ROOT` 밖·타 토픽 Write/Edit를 거부한다.
-- 동결·번호·게이트: ops-workflow의 스크립트가 거부한다(exit 1). steward는 **우회하지 않는다** — 왜 막혔는지 읽는다.
-- "하지 마세요"를 최소화하고 **할 수 없게** 만든다.
-- **강제 지점이 말하는 것을 프롬프트에 옮겨 적지 않는다** — 원천이 둘이면 한쪽만 고쳐진다. 넣기 전에 묻는다: _스크립트가 실패할 때 말하는가?_ 미리 말할 것은 **금지·요구**(모르면 시도하거나 빠뜨린다) · **트리거**(모르면 안 부른다) · **성공 경로**(스크립트가 침묵한다)뿐.
+"하지 마세요"를 최소화하고 **할 수 없게** 만든다. 막히면 **우회하지 않고** 왜 막혔는지 읽는다.
+
+**강제 지점이 말하는 것을 프롬프트에 옮겨 적지 않는다** — 원천이 둘이면 한쪽만 고쳐진다. 넣기 전에 묻는다: _스크립트가 실패할 때 말하는가?_ 미리 말할 것은 **금지·요구**(모르면 시도하거나 빠뜨린다) · **트리거**(모르면 안 부른다) · **성공 경로**(스크립트가 침묵한다)뿐.
 
 ---
 
