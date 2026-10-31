@@ -7,6 +7,7 @@
   - $OPS_WORKFLOW_ROOT/harness/**             (역할별 하네스 — design-partner·adr-judge)
   - $OPS_WORKFLOW_ROOT/CLAUDE.md              (규약 — 하네스의 일부. 정책 변경 시 갱신)
   - $TICKET_ENGINEER_ROOT/**                  (티켓 집행 agent 하네스 — 저장소 전체. 설계 §6)
+  - $ORG_PROFILE_ROOT/**                      (조직 프로필 — jyoliar-lab/.github. 공개 얼굴)
   - $CLAUDE_PROJECT_DIR/** 단 .claude/ 제외    (steward 자기 repo: pilots.md·감사로그.
                                                자기 하네스(.claude)는 사람만 개정 — 설계 §5)
   - .claude/write-allow.txt 에 적힌 루트들     (일시 허용 — 사람이 쓰고 지운다. 아래 참조)
@@ -97,6 +98,11 @@ def main():
     if eng and under(fp, eng):
         allow()
 
+    # 조직 프로필 — jyoliar-lab/.github 저장소 전체 (Overview 는 외부 독자용 첫 페이지)
+    prof = os.environ.get("ORG_PROFILE_ROOT")
+    if prof and under(fp, prof):
+        allow()
+
     # 일시 허용 루트 — 사람이 .claude/write-allow.txt 에 적어 둔 경로 (docstring 참조)
     if proj:
         allow_file = os.path.join(proj, ".claude", "write-allow.txt")
@@ -115,7 +121,7 @@ def main():
                  ".claude/settings.local.json 을 확인하라.")
     out_deny(
         "쓰기 경계 위반: %s — steward는 $OPS_WORKFLOW_ROOT의 docs/ops-workflow/** · CLAUDE.md · "
-        ".claude/** · harness/** 와 $TICKET_ENGINEER_ROOT/** 만 편집한다"
+        ".claude/** · harness/** · $TICKET_ENGINEER_ROOT/** · $ORG_PROFILE_ROOT/** 만 편집한다"
         "(자기 repo는 .claude 제외). 다른 토픽 docs는 design-partner 관할이다. "
         "일시 허용이 필요하면 사람이 .claude/write-allow.txt 에 경로를 적는다." % fp
     )

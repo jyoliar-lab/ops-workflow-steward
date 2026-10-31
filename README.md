@@ -25,14 +25,18 @@ ops-workflow-steward/
 
 steward는 정책 ADR(`topic: ops-workflow`)의 **초안**을 `proposed`까지 쓴다. 심사(임계선·입도·"왜"만·자족성·기존 ADR과 충돌)는 ops-workflow의 **adr-judge** 하네스(`cd ops-workflow && claude --add-dir harness/adr-judge`)가 한다 — 사람이 그 세션을 연다. 정책 ADR은 통과해도 `proposed`로 남고(ADR-0032), accept는 사람이 "안정됐다"고 명시할 때만이다. 심사가 끝나면 steward가 하네스 델타를 내고 `pilots.md`에 위치를 적는다.
 
+## 조직 프로필 저장소 — 정책도 하네스도 아니다
+
+`jyoliar-lab/.github`(`$ORG_PROFILE_ROOT`)의 `profile/README.md`는 조직 Overview로 렌더링되는 외부 독자용 첫 페이지다. steward가 쓰지만 정책이 반영되는 곳이 아니므로 `conformance` 감사 대상이 아니고 `pilots.md`에도 오르지 않는다. 하네스를 바꾼 뒤 Overview의 구조 설명이 낡았는지 보는 것은 사람이 지시한다.
+
 ## 로컬 설정 — PC별
 
 `.claude/settings.local.example.json`을 `.claude/settings.local.json`으로 복사해 채운다. 두 가지가 들어간다:
 
 | 키 | 값 | 쓰는 곳 |
 |---|---|---|
-| `env.OPS_WORKFLOW_ROOT` · `env.TICKET_ENGINEER_ROOT` | 두 클론의 절대경로 | hook의 경계 판정 · 모든 스크립트 |
-| `permissions.additionalDirectories` | 같은 두 경로 | Claude Code가 두 저장소 파일을 프롬프트 없이 읽고, 편집을 권한 모드에 따라 허용한다 (설정 파일로 지정한 디렉터리는 스킬·agent·CLAUDE.md를 로드하지 않는다 — `--add-dir`와 다르다) |
+| `env.OPS_WORKFLOW_ROOT` · `env.TICKET_ENGINEER_ROOT` · `env.ORG_PROFILE_ROOT` | 세 클론의 절대경로 (세 번째는 `jyoliar-lab/.github`) | hook의 경계 판정 · 모든 스크립트 |
+| `permissions.additionalDirectories` | 같은 세 경로 | Claude Code가 세 저장소 파일을 프롬프트 없이 읽고, 편집을 권한 모드에 따라 허용한다 (설정 파일로 지정한 디렉터리는 스킬·agent·CLAUDE.md를 로드하지 않는다 — `--add-dir`와 다르다) |
 
 이 파일이 git 추적 대상이면 Claude Code가 "저장소에서 온 설정"으로 보고 신뢰 전까지 보류하므로 gitignored 상태를 유지한다. `env`는 공식 문서상 변수 단위로 적용된다(같은 변수가 여러 파일에 있으면 우선순위 높은 쪽) — 두 변수를 한 파일에 두면 어느 쪽이든 안전하다.
 
@@ -40,7 +44,7 @@ steward는 정책 ADR(`topic: ops-workflow`)의 **초안**을 `proposed`까지 �
 
 | 지켜지는 것 | 강제하는 구조 |
 |---|---|
-| 쓰기 경계 — `$OPS_WORKFLOW_ROOT`의 `docs/ops-workflow/**`·`CLAUDE.md`·`.claude/**`·`harness/**`, `$TICKET_ENGINEER_ROOT/**`, 자기 repo(`.claude/` 제외) | `guard-write.py`(PreToolUse, Write·Edit)가 그 밖을 거부한다. 거부 사유에 허용 범위와 대안이 들어 있다 |
+| 쓰기 경계 — `$OPS_WORKFLOW_ROOT`의 `docs/ops-workflow/**`·`CLAUDE.md`·`.claude/**`·`harness/**`, `$TICKET_ENGINEER_ROOT/**`, `$ORG_PROFILE_ROOT/**`, 자기 repo(`.claude/` 제외) | `guard-write.py`(PreToolUse, Write·Edit)가 그 밖을 거부한다. 거부 사유에 허용 범위와 대안이 들어 있다 |
 | 자기 하네스(`.claude/`)는 사람만 고친다 (CLAUDE.md §5) | 같은 hook가 자기 repo의 `.claude/**` Write·Edit를 거부한다. **Bash 경유(`sed -i`·리다이렉션·heredoc)는 막지 않는다** — 그 경로는 §5 산문이 유일한 보호다 |
 | 동결선 전이 금지 — accept·supersede·unaccept는 adr-judge의 것 (§5) | `guard-write.py`(PreToolUse, Bash)가 `accept.py`·`supersede.py`·`unaccept.py`가 든 명령을 거부한다 |
 | Issue close 금지 (§5) | 같은 Bash 분기가 `gh issue close`를 거부한다 |

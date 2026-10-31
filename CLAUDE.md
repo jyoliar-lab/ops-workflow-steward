@@ -16,19 +16,19 @@
 
 ## 1. 대상 경로 — env var
 
-대상 저장소의 로컬 경로는 env var **`OPS_WORKFLOW_ROOT`**(ops-workflow 클론)·**`TICKET_ENGINEER_ROOT`**(ticket-engineer 클론)로 온다. 모든 스크립트·셸은 이 변수로 대상을 찾는다.
+대상 저장소의 로컬 경로는 env var **`OPS_WORKFLOW_ROOT`**(ops-workflow 클론)·**`TICKET_ENGINEER_ROOT`**(ticket-engineer 클론)·**`ORG_PROFILE_ROOT`**(jyoliar-lab/.github 클론)로 온다. 모든 스크립트·셸은 이 변수로 대상을 찾는다.
 
 ---
 
 ## 2. 쓰기 경계 — 토픽 소유권
 
-steward가 밖에 쓸 수 있는 곳은 넷이다:
+steward가 밖에 쓸 수 있는 곳은 다섯이다:
 
 - `$OPS_WORKFLOW_ROOT/docs/ops-workflow/**` — 정책 문서(discussion·ADR)
 - `$OPS_WORKFLOW_ROOT/.claude/**` · `harness/**` — 하네스(공통 스킬·hook · 역할별 프롬프트와 스킬)
 - `$OPS_WORKFLOW_ROOT/CLAUDE.md` — **규약**(하네스의 일부. 정책 변경 시 갱신)
 - `$TICKET_ENGINEER_ROOT/**` — 티켓 집행 agent의 하네스(저장소 전체가 하네스다. §6)
-
+- `$ORG_PROFILE_ROOT/**` — 조직 프로필. `profile/README.md`가 외부 독자용 Overview다.
 **그 외 `docs/<토픽>/**`과 루트의 다른 파일(`.gitignore`등)은 쓰지 않는다** —`docs/<토픽>`은 그 토픽을 다루는 역할(design-partner)의 관할이다.
 
 ---

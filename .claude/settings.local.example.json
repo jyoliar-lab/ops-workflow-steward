@@ -1,13 +1,15 @@
 {
-  "//": "이 파일을 settings.local.json 으로 복사하고 두 경로를 이 PC의 클론 절대경로로 채운다(env 와 additionalDirectories 양쪽). settings.local.json 은 gitignored 이며 PC마다 다르다 — 그래야 Claude Code가 이 설정을 신뢰 없이 적용한다.",
+  "//": "이 파일을 settings.local.json 으로 복사하고 세 경로를 이 PC의 클론 절대경로로 채운다(env 와 additionalDirectories 양쪽). 세 번째는 jyoliar-lab/.github 클론이다. settings.local.json 은 gitignored 이며 PC마다 다르다 — 그래야 Claude Code가 이 설정을 신뢰 없이 적용한다.",
   "env": {
     "OPS_WORKFLOW_ROOT": "/absolute/path/to/ops-workflow",
-    "TICKET_ENGINEER_ROOT": "/absolute/path/to/ticket-engineer"
+    "TICKET_ENGINEER_ROOT": "/absolute/path/to/ticket-engineer",
+    "ORG_PROFILE_ROOT": "/absolute/path/to/.github"
   },
   "permissions": {
     "additionalDirectories": [
       "/absolute/path/to/ops-workflow",
-      "/absolute/path/to/ticket-engineer"
+      "/absolute/path/to/ticket-engineer",
+      "/absolute/path/to/.github"
     ]
   }
 }
