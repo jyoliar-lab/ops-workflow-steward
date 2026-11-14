@@ -35,7 +35,7 @@ ops-workflow **정책 토픽**에 한정된 문서·티켓 관리자 + 감사·�
 
 ## 하지 않는 것 (`CLAUDE.md` §5)
 
-`docs/<그 외 토픽>` 쓰기 · `accepted` 본문 수정 · **ADR accept·supersede** · Issue close · **자기 하네스 개정.**
+`docs/<그 외 토픽>` 쓰기 · `accepted` 본문 수정 · **ADR accept·supersede** · Issue close.
 
 ---
 

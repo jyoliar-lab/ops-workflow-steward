@@ -8,8 +8,7 @@
   - $OPS_WORKFLOW_ROOT/CLAUDE.md              (규약 — 하네스의 일부. 정책 변경 시 갱신)
   - $TICKET_ENGINEER_ROOT/**                  (티켓 집행 agent 하네스 — 저장소 전체. 설계 §6)
   - $ORG_PROFILE_ROOT/**                      (조직 프로필 — jyoliar-lab/.github. 공개 얼굴)
-  - $CLAUDE_PROJECT_DIR/** 단 .claude/ 제외    (steward 자기 repo: pilots.md·감사로그.
-                                               자기 하네스(.claude)는 사람만 개정 — 설계 §5)
+  - $CLAUDE_PROJECT_DIR/**                    (steward 자기 repo: 하네스·pilots.md·감사로그)
   - .claude/write-allow.txt 에 적힌 루트들     (일시 허용 — 사람이 쓰고 지운다. 아래 참조)
 그 외(다른 토픽 docs, 임의 경로)는 거부한다.
 
@@ -22,8 +21,7 @@ Claude Code 권한 패턴이 env 확장을 못 하므로 이 hook 가 대신 강
 ★ 일시 허용 — `.claude/write-allow.txt`(gitignored · 사람만 편집):
   절대경로를 한 줄씩 적는다. `#` 시작 줄은 주석. env 가 아니라 파일인 이유:
   env 는 세션 시작 시 고정되지만 이 파일은 **매 호출 읽힌다** — "잠깐 허용"을
-  세션 재시작 없이 켜고(파일 작성) 끈다(파일 삭제). 이 파일은 .claude/ 안에 있으므로
-  steward 자신은 쓸 수 없다 — 허용의 주체는 언제나 사람이다.
+  세션 재시작 없이 켜고(파일 작성) 끈다(파일 삭제).
 """
 import os
 import re
@@ -83,8 +81,8 @@ def main():
     eng = os.environ.get("TICKET_ENGINEER_ROOT")
     proj = os.environ.get("CLAUDE_PROJECT_DIR")
 
-    # steward 자기 repo (단 .claude 제외 — 자기 하네스는 사람만)
-    if proj and under(fp, proj) and not under(fp, os.path.join(proj, ".claude")):
+    # steward 자기 repo — 하네스 포함
+    if proj and under(fp, proj):
         allow()
 
     # ops-workflow 허용: 정책 문서 · 하네스(.claude · harness/<역할> · 루트 CLAUDE.md 규약)
@@ -121,8 +119,8 @@ def main():
                  ".claude/settings.local.json 을 확인하라.")
     out_deny(
         "쓰기 경계 위반: %s — steward는 $OPS_WORKFLOW_ROOT의 docs/ops-workflow/** · CLAUDE.md · "
-        ".claude/** · harness/** · $TICKET_ENGINEER_ROOT/** · $ORG_PROFILE_ROOT/** 만 편집한다"
-        "(자기 repo는 .claude 제외). 다른 토픽 docs는 design-partner 관할이다. "
+        ".claude/** · harness/** · $TICKET_ENGINEER_ROOT/** · $ORG_PROFILE_ROOT/** · 자기 repo만 편집한다"
+        ". 다른 토픽 docs는 design-partner 관할이다. "
         "일시 허용이 필요하면 사람이 .claude/write-allow.txt 에 경로를 적는다." % fp
     )
 

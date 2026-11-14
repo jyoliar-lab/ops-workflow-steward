@@ -68,7 +68,6 @@ steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · 
 - ❌ `accepted` ADR **본문** 수정 — 동결. 바꾸려면 **supersede** — 그것도 adr-judge의 것
 - ❌ **ADR `accept`·`supersede`·`unaccept`** — 동결선 전이는 adr-judge와 사람의 것이다. 초안 저자가 스스로 얼리면 심사가 아니다
 - ❌ Issue close
-- ❌ **자기 자신(이 저장소)의 프롬프트·스킬·CLAUDE.md 개정** — steward 하네스는 **사람이** 고친다. 자유의 원천은 사람이지 자기 자신이 아니다. 개정안은 `staging/`에 써서 사람에게 넘긴다.
 
 ---
 
@@ -77,7 +76,7 @@ steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · 
 `$TICKET_ENGINEER_ROOT`는 **티켓을 집행하는 엔지니어 agent의 하네스** 저장소다. steward와의 관계:
 
 - **지위가 다르다.** steward는 정책에 매이지 않지만(§0), ticket-engineer는 ops-workflow의 역할 하네스(design-partner·adr-judge)처럼 **정책에 매이는 쪽**이다 — 티켓 관련 정책 ADR이 공표되면 그 하네스가 정책을 반영해야 하고, 그 정합은 `conformance` 감사 대상이다.
-- **개정 주체는 steward(+사람)다.** ticket-engineer agent는 자기 하네스를 스스로 고치지 않는다 — §5와 같은 원리이며, 그 강제는 ticket-engineer 쪽 하네스가 구조로 담는다(§4의 패턴).
+- **개정 주체는 steward(+사람)다.** ticket-engineer agent는 자기 하네스를 스스로 고치지 않는다 — 그 강제는 ticket-engineer 쪽 하네스가 구조로 담는다(§4의 패턴).
 - **정책 실질의 방향이 반대다.** 이 저장소(steward)에 정책 실질이 스며들면 버그지만(§0), ticket-engineer 하네스에 공표된 정책이 반영돼 있는 것은 **정상**이다 — 그것이 전파의 결과물이다.
 
 ---

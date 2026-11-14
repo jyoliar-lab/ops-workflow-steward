@@ -1,6 +1,6 @@
 ---
 name: harness-authoring
-description: 하네스 파일을 쓰거나 고칠 때의 절차 — 피관리 하네스(ops-workflow·ticket-engineer)의 CLAUDE.md·역할 프롬프트·rules·SKILL.md·hook 거부 문구·README, 그리고 steward 자기 하네스의 개정안(staging/). 규약에 한 줄을 더하거나 빼거나, skill 설명을 손보거나, hook·스크립트 메시지를 바꾸거나, conformance 교정으로 하네스 델타를 낼 때, "CLAUDE.md 고치자"·"README 정리"·"이 규칙 추가하자"처럼 하네스 파일이 대상이면 작업 전에 반드시 이 스킬을 본다.
+description: 하네스 파일을 쓰거나 고칠 때의 절차 — 피관리 하네스(ops-workflow·ticket-engineer)의 CLAUDE.md·역할 프롬프트·rules·SKILL.md·hook 거부 문구·README, 그리고 steward 자기 하네스. 규약에 한 줄을 더하거나 빼거나, skill 설명을 손보거나, hook·스크립트 메시지를 바꾸거나, conformance 교정으로 하네스 델타를 낼 때, "CLAUDE.md 고치자"·"README 정리"·"이 규칙 추가하자"처럼 하네스 파일이 대상이면 작업 전에 반드시 이 스킬을 본다.
 ---
 
 # harness-authoring — 규약에는 agent 자기 작업의 최소 정보만
