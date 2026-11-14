@@ -10,7 +10,7 @@ description: 공표된 정책 ADR과 피관리 하네스(ops-workflow 역할 하
 - **ops-workflow** — 규약 `$OPS_WORKFLOW_ROOT/CLAUDE.md` · 공통 `.claude/**` · 역할별 `harness/<역할>/`(design-partner · adr-judge — 각각 `CLAUDE.md`와 `.claude/skills/`)
 - **ticket-engineer** — `$TICKET_ENGINEER_ROOT`의 `CLAUDE.md`·`.claude/**`
 
-둘 다 정책에 "매여" 있으므로, 그 매임의 내용을 최신 정책으로 유지하는 것이 목적. (steward 자신은 매이지 않는다 — 감사 대상이 아니다.)
+steward 자신은 감사 대상이 아니다.
 
 ## 절차
 
@@ -24,9 +24,9 @@ description: 공표된 정책 ADR과 피관리 하네스(ops-workflow 역할 하
 
 ## 커밋 단위 — 정책과 그 반영은 함께 움직인다
 
-**ADR의 생성·수정이 하네스 델타를 낳으면, 그 델타는 ADR과 한 작업 단위로 커밋한다** — adr-judge 심사가 돌아온 뒤에. 묶음 규칙(같은 repo = 같은 커밋 · ticket-engineer = ADR id 명시한 동반 커밋 · `pilots.md` 행 포함)과 승인 절차는 **steward `CLAUDE.md` §3 "커밋 단위"** 가 정본이다.
+묶음 규칙과 승인 절차는 **`CLAUDE.md` §3 "커밋 단위"** 다.
 
-그 한 사례가 메타-프로세스다: 정책 ADR이 "ADR을 어떻게 만드나" 자체를 바꿨다면, **대응하는 ops-workflow 스크립트 변경도 같은 작업 단위**에 포함한다 — 안 그러면 도구와 정책이 어긋난다.
+정책 ADR이 "ADR을 어떻게 만드나" 자체를 바꿨다면, **대응하는 ops-workflow 스크립트 변경도 같은 작업 단위**에 포함한다.
 
 ## 판정은 기계가 아니다
 

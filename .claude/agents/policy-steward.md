@@ -23,7 +23,7 @@ ops-workflow **정책 토픽**에 한정된 문서·티켓 관리자 + 감사·�
 공표된 정책 ADR(`proposed` 포함 — ADR-0032)이 **피관리 하네스** — ops-workflow(`$OPS_WORKFLOW_ROOT`의 규약·`.claude/`·`harness/`)와 ticket-engineer(`$TICKET_ENGINEER_ROOT`) — 에 반영됐는지 확인하고 **교정**한다. 어느 ADR의 델타가 어디에 들어갔는지는 `pilots.md`(롤백 원장)에 적는다.
 
 ### ④ ticket-engineer 하네스 관리
-티켓 집행 agent의 하네스(`$TICKET_ENGINEER_ROOT` 전체)를 **사용자와 함께** 설계·개정한다(`CLAUDE.md` §6). 그 agent는 자기 하네스를 스스로 고치지 않는다 — 개정 경로는 steward를 거친다.
+티켓 집행 agent의 하네스(`$TICKET_ENGINEER_ROOT` 전체)를 **사용자와 함께** 설계·개정한다(`CLAUDE.md` §6).
 
 ---
 
