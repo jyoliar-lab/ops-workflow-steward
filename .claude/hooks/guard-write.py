@@ -8,6 +8,8 @@
   - $OPS_WORKFLOW_ROOT/CLAUDE.md              (규약 — 하네스의 일부. 정책 변경 시 갱신)
   - $TICKET_ENGINEER_ROOT/**                  (티켓 집행 agent 하네스 — 저장소 전체. 설계 §6)
   - $ORG_PROFILE_ROOT/**                      (조직 프로필 — jyoliar-lab/.github. 공개 얼굴)
+  - Claude Code 메모리                        (~/.claude/projects/<슬러그>/memory/** — 자기 것,
+                                               두 피관리 하네스의 것은 반영한 항목 정리)
   - $CLAUDE_PROJECT_DIR/**                    (steward 자기 repo: 하네스·pilots.md·감사로그)
   - .claude/write-allow.txt 에 적힌 루트들     (일시 허용 — 사람이 쓰고 지운다. 아래 참조)
 그 외(다른 토픽 docs, 임의 경로)는 거부한다.
@@ -51,6 +53,13 @@ def under(path, root):
     root = norm(root)
     path = norm(path)
     return path == root or path.startswith(root + os.sep)
+
+
+def memory_dir(root: str) -> str:
+    """저장소 루트의 Claude Code 메모리 디렉터리 — ~/.claude/projects/<슬러그>/memory."""
+    config: str = os.environ.get("CLAUDE_CONFIG_DIR") or os.path.expanduser("~/.claude")
+    slug: str = re.sub(r"[^A-Za-z0-9]", "-", os.path.abspath(root))
+    return os.path.join(config, "projects", slug, "memory")
 
 
 def main():
@@ -97,6 +106,10 @@ def main():
     if prof and under(fp, prof):
         allow()
 
+    # 메모리 — 자기 것, 그리고 두 피관리 하네스의 것(반영한 항목을 지우고 색인을 고친다 — memory-harvest)
+    if any(root and under(fp, memory_dir(root)) for root in (proj, ops, eng)):
+        allow()
+
     # 일시 허용 루트 — 사람이 .claude/write-allow.txt 에 적어 둔 경로 (docstring 참조)
     if proj:
         allow_file = os.path.join(proj, ".claude", "write-allow.txt")
@@ -115,7 +128,7 @@ def main():
                  ".claude/settings.local.json 을 확인하라.")
     out_deny(
         "쓰기 경계 위반: %s — steward는 $OPS_WORKFLOW_ROOT의 docs/ops-workflow/** · CLAUDE.md · "
-        ".claude/** · harness/** · $TICKET_ENGINEER_ROOT/** · $ORG_PROFILE_ROOT/** · 자기 repo만 편집한다"
+        ".claude/** · harness/** · $TICKET_ENGINEER_ROOT/** · $ORG_PROFILE_ROOT/** · 두 하네스의 메모리 · 자기 repo만 편집한다"
         ". 다른 토픽 docs는 design-partner 관할이다. "
         "일시 허용이 필요하면 사람이 .claude/write-allow.txt 에 경로를 적는다." % fp
     )

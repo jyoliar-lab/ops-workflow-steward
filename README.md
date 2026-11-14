@@ -8,10 +8,11 @@
 ops-workflow-steward/
 ├── CLAUDE.md                    규약 — 매 세션 로드
 ├── pilots.md                    롤백 원장 — 어느 정책 ADR의 델타가 하네스의 어디에 들어갔나 (conformance가 읽는다)
+├── memory-ledger.md             메모리에서 하네스로 올린 항목의 원장 (memory-harvest가 읽고 쓴다)
 ├── staging/                     gitignored — steward가 사람에게 넘기는 초안
 └── .claude/
     ├── agents/policy-steward.md 역할 프롬프트 (claude --agent policy-steward)
-    ├── skills/                  ops-tools(저작 도구 구동) · conformance(하네스 정합·전파) · harness-authoring(하네스 파일 저작 규율)
+    ├── skills/                  ops-tools(저작 도구 구동) · conformance(하네스 정합·전파) · harness-authoring(하네스 파일 저작 규율) · memory-harvest(메모리의 지적을 하네스로)
     ├── rules/                   규약의 일부
     ├── hooks/guard-write.py     쓰기 경계·close 금지 hook
     ├── settings.json            hook 등록 · 권한 — 공통
@@ -44,7 +45,7 @@ steward는 정책 ADR(`topic: ops-workflow`)의 **초안**을 `proposed`까지 �
 
 | 지켜지는 것 | 강제하는 구조 |
 |---|---|
-| 쓰기 경계 — `$OPS_WORKFLOW_ROOT`의 `docs/ops-workflow/**`·`CLAUDE.md`·`.claude/**`·`harness/**`, `$TICKET_ENGINEER_ROOT/**`, `$ORG_PROFILE_ROOT/**`, 자기 repo(하네스 포함) | `guard-write.py`(PreToolUse, Write·Edit)가 그 밖을 거부한다. 거부 사유에 허용 범위와 대안이 들어 있다 |
+| 쓰기 경계 — `$OPS_WORKFLOW_ROOT`의 `docs/ops-workflow/**`·`CLAUDE.md`·`.claude/**`·`harness/**`, `$TICKET_ENGINEER_ROOT/**`, `$ORG_PROFILE_ROOT/**`, 두 하네스와 자기 자신의 Claude Code 메모리(`~/.claude/projects/<슬러그>/memory/`), 자기 repo(하네스 포함) | `guard-write.py`(PreToolUse, Write·Edit)가 그 밖을 거부한다. 거부 사유에 허용 범위와 대안이 들어 있다 |
 | Issue close 금지 (§5) | `guard-write.py`(PreToolUse, Bash)가 `gh issue close`를 거부한다 |
 | 일시 허용 | 사람이 `.claude/write-allow.txt`에 절대경로를 한 줄씩 적는다(`#` 주석). 매 호출 읽히므로 세션 재시작 없이 켜고(작성) 끈다(삭제). **임시다 — 끝나면 지운다** |
 | 동결·번호·게이트 | ops-workflow의 스크립트가 거부한다(exit 1) |
@@ -61,7 +62,7 @@ python3 "${CLAUDE_PROJECT_DIR}/.claude/skills/ops-tools/scripts/ops-run.py" <ops
 cd "$OPS_WORKFLOW_ROOT" && python3 <ops 기준 상대경로> [args]
 ```
 
-스크립트 위치는 ops-workflow README의 하네스 구조를 따른다 — 공통 `adr`은 루트 `.claude/skills/`, `ticket`은 `harness/design-partner/`, 인덱스는 `.claude/scripts/build-index.py`. `list-ops-tools.py`가 이 전부를 라이브로 보여준다(adr-judge의 `adr-accept`도 보이지만 steward는 부르지 않는다 — hook가 거부한다). ops-workflow 안에서는 PostToolUse hook가 `_index/`를 자동 재생성하지만 **steward 세션에는 그 hook가 없다** — 문서를 바꾼 뒤 `build-index.py`를 직접 돌린다.
+스크립트 위치는 ops-workflow README의 하네스 구조를 따른다 — 공통 `adr`은 루트 `.claude/skills/`, `ticket`은 `harness/design-partner/`, 인덱스는 `.claude/scripts/build-index.py`. `list-ops-tools.py`가 이 전부를 라이브로 보여준다(adr-judge의 `adr-accept`도 보이지만 steward는 부르지 않는다 — CLAUDE.md §5). ops-workflow 안에서는 PostToolUse hook가 `_index/`를 자동 재생성하지만 **steward 세션에는 그 hook가 없다** — 문서를 바꾼 뒤 `build-index.py`를 직접 돌린다.
 
 ## conformance의 기준선
 

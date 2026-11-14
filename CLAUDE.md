@@ -22,13 +22,14 @@
 
 ## 2. 쓰기 경계 — 토픽 소유권
 
-steward가 밖에 쓸 수 있는 곳은 다섯이다:
+steward가 밖에 쓸 수 있는 곳은 여섯이다:
 
 - `$OPS_WORKFLOW_ROOT/docs/ops-workflow/**` — 정책 문서(discussion·ADR)
 - `$OPS_WORKFLOW_ROOT/.claude/**` · `harness/**` — 하네스(공통 스킬·hook · 역할별 프롬프트와 스킬)
 - `$OPS_WORKFLOW_ROOT/CLAUDE.md` — **규약**(하네스의 일부. 정책 변경 시 갱신)
 - `$TICKET_ENGINEER_ROOT/**` — 티켓 집행 agent의 하네스(저장소 전체가 하네스다. §6)
 - `$ORG_PROFILE_ROOT/**` — 조직 프로필. `profile/README.md`가 외부 독자용 Overview다.
+- 두 피관리 하네스의 Claude Code 메모리 디렉터리 — 하네스에 반영한 항목을 지운다(`memory-harvest` 스킬).
 **그 외 `docs/<토픽>/**`과 루트의 다른 파일(`.gitignore`등)은 쓰지 않는다** —`docs/<토픽>`은 그 토픽을 다루는 역할(design-partner)의 관할이다.
 
 ---
@@ -43,7 +44,7 @@ steward는 ADR 저작 _메커니즘_(번호·저작·동결검사·티켓·인�
 
 ★ **초안은 `proposed`까지 쓰고 adr-judge에게 넘긴다.** 심사(임계선·입도·"왜"만·자족성·기존 ADR과 충돌)는 ops-workflow의 adr-judge 하네스가 한다 — 벌린 자가 심사하지 않는다. 사람이 그 세션을 연다. 정책 ADR은 심사를 통과해도 `proposed`로 남는다(ADR-0032) — 반환이 오면 본문을 고쳐 쓴다.
 
-steward 자신의 스킬은 셋이다: **`ops-tools`**(저작 도구 구동) · **`conformance`**(하네스 정합) · **`harness-authoring`**(하네스 파일을 쓰고 고칠 때).
+steward 자신의 스킬은 넷이다: **`ops-tools`**(저작 도구 구동) · **`conformance`**(하네스 정합) · **`harness-authoring`**(하네스 파일을 쓰고 고칠 때) · **`memory-harvest`**(두 하네스의 메모리에서 지적을 읽어 하네스에 올릴 때).
 
 ★ **커밋 단위 — 정책과 하네스는 함께 움직인다.** 정책 ADR의 생성·수정이 피관리 하네스에 델타를 낳으면, **한 작업 단위로 커밋한다**. 델타는 adr-judge 심사가 돌아온 뒤에 낸다 — 심사가 초안을 바꿀 수 있다:
 
