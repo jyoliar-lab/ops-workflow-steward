@@ -13,7 +13,7 @@ ops-workflow-steward/
     ├── agents/policy-steward.md 역할 프롬프트 (claude --agent policy-steward)
     ├── skills/                  ops-tools(저작 도구 구동) · conformance(하네스 정합·전파) · harness-authoring(하네스 파일 저작 규율)
     ├── rules/                   규약의 일부
-    ├── hooks/guard-write.py     쓰기 경계·전이 금지 hook
+    ├── hooks/guard-write.py     쓰기 경계·close 금지 hook
     ├── settings.json            hook 등록 · 권한 — 공통
     ├── settings.local.json      gitignored · PC별 (아래)
     └── write-allow.txt          gitignored · 사람만 — 일시 쓰기 허용 루트
@@ -45,8 +45,7 @@ steward는 정책 ADR(`topic: ops-workflow`)의 **초안**을 `proposed`까지 �
 | 지켜지는 것 | 강제하는 구조 |
 |---|---|
 | 쓰기 경계 — `$OPS_WORKFLOW_ROOT`의 `docs/ops-workflow/**`·`CLAUDE.md`·`.claude/**`·`harness/**`, `$TICKET_ENGINEER_ROOT/**`, `$ORG_PROFILE_ROOT/**`, 자기 repo(하네스 포함) | `guard-write.py`(PreToolUse, Write·Edit)가 그 밖을 거부한다. 거부 사유에 허용 범위와 대안이 들어 있다 |
-| 동결선 전이 금지 — accept·supersede·unaccept는 adr-judge의 것 (§5) | `guard-write.py`(PreToolUse, Bash)가 `accept.py`·`supersede.py`·`unaccept.py`가 든 명령을 거부한다 |
-| Issue close 금지 (§5) | 같은 Bash 분기가 `gh issue close`를 거부한다 |
+| Issue close 금지 (§5) | `guard-write.py`(PreToolUse, Bash)가 `gh issue close`를 거부한다 |
 | 일시 허용 | 사람이 `.claude/write-allow.txt`에 절대경로를 한 줄씩 적는다(`#` 주석). 매 호출 읽히므로 세션 재시작 없이 켜고(작성) 끈다(삭제). **임시다 — 끝나면 지운다** |
 | 동결·번호·게이트 | ops-workflow의 스크립트가 거부한다(exit 1) |
 | env 미설정 | `OPS_WORKFLOW_ROOT`가 없으면 hook가 모든 밖 쓰기를 거부하고, 스크립트는 exit 1 |
